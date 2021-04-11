@@ -1,0 +1,46 @@
+<section class="w-1/2 border-2 shadow flex flex-col place-items-center mx-auto p-6">
+  <h1 class="text-4xl font-bold italic text-gray-700">InstagramClone</h1>
+  <p class="text-gray-500 font-semibold text-lg mt-6 text-center px-8">Sign up to see photos and videos from your friends.</p>
+
+  <%= form_for @changeset, Routes.user_registration_path(@conn, :create), [class: "flex flex-col space-y-4 w-full px-6"], fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="alert alert-danger">
+        <p>Oops, something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <div class="flex flex-col">
+      <%= label f, :email, class: "text-gray-400" %>
+      <%= email_input f, :email, class: "rounded border-gray-300 shadow-sm focus:ring-gray-900 focus:ring-opacity-50 focus:border-gray-900" %>
+      <%= error_tag f, :email, class: "text-red-700 text-sm" %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= label f, :full_name, class: "text-gray-400" %>
+      <%= text_input f, :full_name, class: "rounded border-gray-300 shadow-sm focus:ring-gray-900 focus:ring-opacity-50 focus:border-gray-900" %>
+      <%= error_tag f, :full_name, class: "text-red-700 text-sm" %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= label f, :username, class: "text-gray-400" %>
+      <%= text_input f, :username, class: "rounded border-gray-300 shadow-sm focus:ring-gray-900 focus:ring-opacity-50 focus:border-gray-900" %>
+      <%= error_tag f, :username, class: "text-red-700 text-sm" %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= label f, :password, class: "text-gray-400" %>
+      <%= password_input f, :password, class: "rounded border-gray-300 shadow-sm focus:ring-gray-900 focus:ring-opacity-50 focus:border-gray-900" %>
+      <%= error_tag f, :password, class: "text-red-700 text-sm" %>
+    </div>
+
+    <div>
+      <%= submit "Sign up", phx_disable_with: "Saving...", class: "block w-full py-2 border-none shadow rounded font-semibold text-sm text-gray-50 hover:bg-light-blue-600 bg-light-blue-500 cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <p class="text-sm px-10 text-center mt-6 text-gray-400 font-semibold">By signing up, you agree to our Terms , Data Policy and Cookies Policy .</p>
+</section>
+
+<section class="w-1/2 border-2 shadow flex justify-center mx-auto p-6 mt-6">
+  <p class="text-lg text-gray-600">Have an account? <%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "text-light-blue-500 font-semibold" %></p>
+</section>

@@ -1,4 +1,4 @@
-<main role="main" class="container">
+<main role="main" class="container mx-auto max-w-full md:w-11/12 2xl:w-6/12 pt-24">
   <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
   <%= @inner_content %>
