@@ -19,17 +19,6 @@ module.exports = {
         cyan: colors.cyan,
       },
     },
-    customForms: (theme) => ({
-      default: {
-        checkbox: {
-          "&:focus": {
-            outline: "none",
-            boxShadow: "none",
-            borderColor: "none",
-          },
-        },
-      },
-    }),
   },
   variants: {
     extend: {
