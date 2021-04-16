@@ -110,6 +110,7 @@ defmodule InstagramCloneWeb do
 
       import InstagramCloneWeb.ErrorHelpers
       import InstagramCloneWeb.Gettext
+      import InstagramCloneWeb.RenderHelpers
       alias InstagramCloneWeb.Router.Helpers, as: Routes
     end
   end

@@ -1,0 +1,11 @@
+<div class="w-1/4 border-r-2">
+  <ul>
+    <%= live_patch content_tag(:li, "Edit Profile",
+      class: "p-4 #{selected_link?(@current_uri_path, @settings_path)}"),
+      to: @settings_path %>
+
+    <%= live_patch content_tag(:li, "Change Password",
+      class: "p-4 #{selected_link?(@current_uri_path, @pass_settings_path)}"),
+      to: @pass_settings_path %>
+  </ul>
+</div>

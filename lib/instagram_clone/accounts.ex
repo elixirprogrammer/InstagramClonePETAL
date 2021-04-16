@@ -92,6 +92,15 @@ defmodule InstagramClone.Accounts do
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false)
   end
+  def change_user(user, attrs \\ %{}) do
+    User.registration_changeset(user, attrs, register_user: false)
+  end
+
+  def update_user(user, attrs) do
+    user
+    |> User.registration_changeset(attrs, register_user: false)
+    |> Repo.update()
+  end
 
   ## Settings
 
@@ -197,19 +206,10 @@ defmodule InstagramClone.Accounts do
 
   """
   def update_user_password(user, password, attrs) do
-    changeset =
-      user
-      |> User.password_changeset(attrs)
-      |> User.validate_current_password(password)
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _} -> {:error, changeset}
-    end
+    user
+    |> User.password_changeset(attrs)
+    |> User.validate_current_password(password)
+    |> Repo.update()
   end
 
   ## Session

@@ -41,6 +41,7 @@ defmodule InstagramClone.Accounts.User do
     |> validate_length(:username, min: 5, max: 30)
     |> validate_format(:username, ~r/^[a-zA-Z0-9_.-]*$/, message: "Please use letters and numbers without space(only characters allowed _ . -)")
     |> unique_constraint(:username)
+    |> unsafe_validate_unique(:username, InstagramClone.Repo)
     |> validate_length(:full_name, min: 4, max: 30)
     |> validate_email()
     |> validate_password(opts)

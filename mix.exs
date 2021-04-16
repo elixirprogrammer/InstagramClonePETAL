@@ -50,7 +50,8 @@ defmodule InstagramClone.MixProject do
       {:phoenix_live_view, "~> 0.15.4", override: true},
       {:timex, "~> 3.6"},
       {:faker, "~> 0.16.0"},
-      {:phx_gen_auth, "~> 0.7", only: [:dev], runtime: false}
+      {:phx_gen_auth, "~> 0.7", only: [:dev], runtime: false},
+      {:mogrify, "~> 0.8.0"}
     ]
   end
 
