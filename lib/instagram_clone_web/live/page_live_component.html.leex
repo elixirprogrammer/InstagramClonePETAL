@@ -5,6 +5,7 @@
   <%= f = form_for @changeset, Routes.user_registration_path(@socket, :create),
     phx_change: "validate",
     phx_submit: "save",
+    phx_target: @myself,
     phx_trigger_action: @trigger_submit,
     class: "flex flex-col space-y-4 w-full px-6" %>
 

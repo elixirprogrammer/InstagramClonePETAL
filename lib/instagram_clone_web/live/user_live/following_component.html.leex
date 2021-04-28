@@ -1,0 +1,30 @@
+<header class="bg-gray-50 p-2 border-b-2 rounded-t-xl">
+  <h1 class="flex justify-center text-xl font-semibold">Following</h1>
+</header>
+<%= for follow <- @following do %>
+  <div class="p-4">
+    <div class="flex items-center">
+      <%= live_redirect to: Routes.user_profile_path(@socket, :index, follow.followed.username) do %>
+        <%= img_tag Avatar.get_thumb(follow.followed.avatar_url), class: "w-10 h-10 rounded-full object-cover object-center" %>
+      <% end %>
+
+      <div class="ml-3">
+        <%= live_redirect  follow.followed.username,
+          to: Routes.user_profile_path(@socket, :index, follow.followed.username),
+          class: "font-semibold text-sm truncate text-gray-700 hover:underline" %>
+        <h6 class="font-semibold text-sm truncate text-gray-400">
+          <%= follow.followed.full_name %>
+        </h6>
+      </div>
+      <%= if @current_user !== follow.followed do %>
+        <span class="ml-auto">
+          <%= live_component @socket,
+            InstagramCloneWeb.UserLive.FollowComponent,
+            id: follow.followed.id,
+            user: follow.followed,
+            current_user: @current_user %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+<% end %>

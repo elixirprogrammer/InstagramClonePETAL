@@ -21,6 +21,7 @@ defmodule InstagramCloneWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+    live "/:username", UserLive.Profile, :index
   end
 
   # Other scopes may use custom stacks.
@@ -65,6 +66,8 @@ defmodule InstagramCloneWeb.Router do
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
     live "/accounts/edit", UserLive.Settings
     live "/accounts/password/change", UserLive.PassSettings
+    live "/:username/following", UserLive.Profile, :following
+    live "/:username/followers", UserLive.Profile, :followers
   end
 
   scope "/", InstagramCloneWeb do

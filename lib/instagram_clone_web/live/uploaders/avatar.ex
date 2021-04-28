@@ -29,6 +29,10 @@ defmodule InstagramClone.Uploaders.Avatar do
     :ok
   end
 
+  def get_thumb(avatar_url) when avatar_url == "/images/default-avatar.png" do
+    avatar_url
+  end
+
   def get_thumb(avatar_url) do
     file_name = String.replace_leading(avatar_url, "/uploads/", "")
     ["/#{@upload_directory_name}", "thumb_#{file_name}"] |> Path.join()

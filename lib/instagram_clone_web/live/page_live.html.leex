@@ -1,5 +1,7 @@
 <%= if @current_user do %>
   <h1>User Logged In Homepage</h1>
 <% else %>
-  <%= live_component @socket, InstagramCloneWeb.PageLiveComponent, changeset: @changeset, trigger_submit: @trigger_submit %>
+  <%= live_component @socket,
+    InstagramCloneWeb.PageLiveComponent,
+    id: 1 %>
 <% end %>

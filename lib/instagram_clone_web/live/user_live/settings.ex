@@ -55,6 +55,13 @@ defmodule InstagramCloneWeb.UserLive.Settings do
     end
   end
 
+  @impl true
+  def handle_params(_params, uri, socket) do
+    {:noreply,
+      socket
+      |> assign(current_uri_path: URI.parse(uri).path)}
+  end
+
   defp handle_progress(:avatar_url, entry, socket) do
     if entry.done? do
       avatar_url = Avatar.get_avatar_url(socket, entry)

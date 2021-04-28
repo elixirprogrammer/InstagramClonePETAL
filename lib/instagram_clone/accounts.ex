@@ -7,6 +7,7 @@ defmodule InstagramClone.Accounts do
   alias InstagramClone.Repo
   alias InstagramClone.Accounts.{User, UserToken, UserNotifier}
   alias InstagramCloneWeb.UserAuth
+  alias InstagramClone.Accounts.Follows
 
   ## Database getters
 
@@ -232,6 +233,13 @@ defmodule InstagramClone.Accounts do
   end
 
   @doc """
+  Gets the user with the given username param.
+  """
+  def profile(param) do
+    Repo.get_by!(User, username: param)
+  end
+
+  @doc """
   Deletes the signed token with the given context.
   """
   def delete_session_token(token) do
@@ -363,4 +371,76 @@ defmodule InstagramClone.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  @doc """
+  Creates a follow to the given followed user, and builds
+  user association to be able to preload the user when associations are loaded,
+  gets users to update counts, then performs 3 Repo operations,
+  creates the follow, updates user followings count, and user followers count,
+  we select the user in our updated followers count query, that gets returned
+  """
+  def create_follow(follower, followed, user) do
+    follower = Ecto.build_assoc(follower, :following)
+    follow = Ecto.build_assoc(followed, :followers, follower)
+    update_following_count = from(u in User, where: u.id == ^user.id)
+    update_followers_count = from(u in User, where: u.id == ^followed.id, select: u)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(:follow, follow)
+    |> Ecto.Multi.update_all(:update_following, update_following_count, inc: [following_count: 1])
+    |> Ecto.Multi.update_all(:update_followers, update_followers_count, inc: [followers_count: 1])
+    |> Repo.transaction()
+    |> case do
+      {:ok,   %{update_followers: update_followers}} ->
+        {1, user} = update_followers
+        hd(user)
+    end
+  end
+
+  @doc """
+  Deletes following association with given user,
+  then performs 3 Repo operations, to delete the association,
+  update followings count, update and select followers count,
+  updated followers count gets returned
+  """
+  def unfollow(follower_id, followed_id) do
+    follow = following?(follower_id, followed_id)
+    update_following_count = from(u in User, where: u.id == ^follower_id)
+    update_followers_count = from(u in User, where: u.id == ^followed_id, select: u)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete(:follow, follow)
+    |> Ecto.Multi.update_all(:update_following, update_following_count, inc: [following_count: -1])
+    |> Ecto.Multi.update_all(:update_followers, update_followers_count, inc: [followers_count: -1])
+    |> Repo.transaction()
+    |> case do
+      {:ok,   %{update_followers: update_followers}} ->
+        {1, user} = update_followers
+        hd(user)
+    end
+  end
+
+  @doc """
+  Returns nil if not found
+  """
+  def following?(follower_id, followed_id) do
+    Repo.get_by(Follows, [follower_id: follower_id, followed_id: followed_id])
+  end
+
+  @doc """
+  Returns all user's followings
+  """
+  def list_following(user) do
+    user = user |> Repo.preload(:following)
+    user.following |> Repo.preload(:followed)
+  end
+
+  @doc """
+  Returns all user's followers
+  """
+  def list_followers(user) do
+    user = user |> Repo.preload(:followers)
+    user.followers |> Repo.preload(:follower)
+  end
+
 end

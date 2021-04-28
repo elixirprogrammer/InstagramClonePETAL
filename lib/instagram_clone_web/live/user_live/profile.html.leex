@@ -1,0 +1,95 @@
+<%= if @live_action == :following do %>
+  <%= live_modal @socket, InstagramCloneWeb.UserLive.Profile.FollowingComponent,
+    id: @user.id || :following,
+    width: "w-1/4",
+    current_user: @current_user,
+    following: @following,
+    return_to: Routes.user_profile_path(@socket, :index, @user.username) %>
+<% end %>
+
+<%= if @live_action == :followers do %>
+  <%= live_modal @socket, InstagramCloneWeb.UserLive.Profile.FollowersComponent,
+    id: @user.id || :followers,
+    width: "w-1/4",
+    current_user: @current_user,
+    followers: @followers,
+    return_to: Routes.user_profile_path(@socket, :index, @user.username) %>
+<% end %>
+
+<header class="flex justify-center px-10">
+  <!-- Profile Picture Section -->
+  <section class="w-1/4">
+      <%= img_tag @user.avatar_url,
+          class: "w-40 h-40 rounded-full object-cover object-center" %>
+  </section>
+  <!-- END Profile Picture Section -->
+
+  <!-- Profile Details Section -->
+  <section class="w-3/4">
+    <div class="flex px-3 pt-3">
+        <h1 class="truncate md:overflow-clip text-2xl md:text-2xl text-gray-500 mb-3"><%= @user.username %></h1>
+        <span class="ml-11">
+          <%= if @live_action == :edit_profile do %>
+            <%= live_patch "Edit Profile",
+                to: Routes.live_path(@socket, InstagramCloneWeb.UserLive.Settings),
+                class: "py-1 px-2 border-2 rounded font-semibold hover:bg-gray-50" %>
+          <% end %>
+
+          <%= if @live_action == :follow_component do %>
+            <%= live_component @socket,
+                InstagramCloneWeb.UserLive.FollowComponent,
+                id: @user.id,
+                user: @user,
+                current_user: @current_user %>
+          <% end %>
+
+          <%= if @live_action == :login_btn do %>
+            <%= link "Follow", to: Routes.user_session_path(@socket, :new), class: "user-profile-follow-btn" %>
+          <% end %>
+        </span>
+    </div>
+
+    <div>
+      <ul class="flex p-3">
+          <li><b>0</b> Posts</li>
+          <%= live_patch to: Routes.user_profile_path(@socket, :followers, @user.username) do %>
+            <li class="ml-11"><b><%= @user.followers_count %></b> Followers</li>
+          <% end %>
+          <%= live_patch to: Routes.user_profile_path(@socket, :following, @user.username) do %>
+            <li class="ml-11"><b><%= @user.following_count %></b> Following</li>
+          <% end %>
+      </ul>
+    </div>
+
+    <div class="p-3">
+      <h2 class="text-md text-gray-600 font-bold"><%= @user.full_name %></h2>
+      <%= if @user.bio do %>
+        <p class="max-w-full break-words"><%= @user.bio %></p>
+      <% end %>
+      <%= if @user.website do %>
+        <%= link display_website_uri(@user.website),
+          to: @user.website,
+          target: "_blank", rel: "noreferrer",
+          class: "text-blue-700" %>
+      <% end %>
+    </div>
+  </section>
+  <!-- END Profile Details Section -->
+</header>
+
+<section class="border-t-2 mt-5">
+  <ul class="flex justify-center text-center space-x-20">
+    <li class="pt-4 px-1 text-sm text-gray-600 border-t-2 border-black -mt-0.5">
+       POSTS
+    </li>
+    <li class="pt-4 px-1 text-sm text-gray-400">
+      IGTV
+    </li>
+    <li class="pt-4 px-1 text-sm text-gray-400">
+      SAVED
+    </li>
+    <li class="pt-4 px-1 text-sm text-gray-400">
+      TAGGED
+    </li>
+  </ul>
+</section>
