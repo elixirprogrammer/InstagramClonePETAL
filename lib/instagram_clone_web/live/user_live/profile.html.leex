@@ -1,6 +1,5 @@
 <%= if @live_action == :following do %>
   <%= live_modal @socket, InstagramCloneWeb.UserLive.Profile.FollowingComponent,
-    id: @user.id || :following,
     width: "w-1/4",
     current_user: @current_user,
     following: @following,
@@ -9,7 +8,6 @@
 
 <%= if @live_action == :followers do %>
   <%= live_modal @socket, InstagramCloneWeb.UserLive.Profile.FollowersComponent,
-    id: @user.id || :followers,
     width: "w-1/4",
     current_user: @current_user,
     followers: @followers,
@@ -51,7 +49,7 @@
 
     <div>
       <ul class="flex p-3">
-          <li><b>0</b> Posts</li>
+          <li><b><%= @user.posts_count %></b> Posts</li>
           <%= live_patch to: Routes.user_profile_path(@socket, :followers, @user.username) do %>
             <li class="ml-11"><b><%= @user.followers_count %></b> Followers</li>
           <% end %>
@@ -93,3 +91,18 @@
     </li>
   </ul>
 </section>
+
+<!-- Gallery Grid -->
+<div id="posts" phx-update="append" class="mt-9 grid gap-8 grid-cols-3">
+  <%= for post <- @posts do %>
+    <%= live_redirect img_tag(post.photo_url, class: "object-cover h-80 w-full"),
+      id: post.url_id,
+      to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.Show, post.url_id) %>
+  <% end %>
+</div>
+
+<div
+  id="profile-posts-footer"
+  class="flex justify-center"
+  phx-hook="ProfilePostsScroll">
+</div>

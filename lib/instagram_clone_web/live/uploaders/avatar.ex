@@ -19,12 +19,13 @@ defmodule InstagramClone.Uploaders.Avatar do
     Phoenix.LiveView.consume_uploaded_entry(socket, entry, fn %{} = meta ->
       dest = Path.join(@upload_directory_path, "#{entry.uuid}.#{ext(entry)}")
       dest_thumb = Path.join(@upload_directory_path, "thumb_#{entry.uuid}.#{ext(entry)}")
+
       mogrify_thumbnail(meta.path, dest, 300)
       mogrify_thumbnail(meta.path, dest_thumb, 150)
-    end)
 
-    rm_file(old_url)
-    old_url |> get_thumb() |> rm_file()
+      rm_file(old_url)
+      old_url |> get_thumb() |> rm_file()
+    end)
 
     :ok
   end
@@ -38,8 +39,11 @@ defmodule InstagramClone.Uploaders.Avatar do
     ["/#{@upload_directory_name}", "thumb_#{file_name}"] |> Path.join()
   end
 
-  def rm_file(url) do
-    if File.exists?(url), do: File.rm!("priv/static/#{url}")
+  def rm_file(old_avatar_url) do
+    url = String.replace_leading(old_avatar_url, "/uploads/", "")
+    path = [@upload_directory_path, url] |> Path.join()
+
+    if File.exists?(path), do: File.rm!(path)
   end
 
   defp mogrify_thumbnail(src_path, dst_path, size) do

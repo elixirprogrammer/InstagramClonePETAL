@@ -5,7 +5,7 @@ defmodule InstagramCloneWeb.ModalComponent do
   def render(assigns) do
     ~L"""
     <div
-      class="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 z-50"
+      class="fixed top-0 left-0 flex items-center justify-center w-full h-screen bg-black bg-opacity-50 z-50"
       phx-capture-click="close"
       phx-window-keydown="close"
       phx-key="escape"
@@ -20,7 +20,7 @@ defmodule InstagramCloneWeb.ModalComponent do
     """
   end
 
-    @impl true
+  @impl true
   def handle_event("close", _, socket) do
     {:noreply, push_patch(socket, to: socket.assigns.return_to)}
   end

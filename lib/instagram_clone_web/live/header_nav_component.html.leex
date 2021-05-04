@@ -1,4 +1,4 @@
-<div class="h-14 border-b-2 flex fixed w-full bg-white z-50">
+<div class="h-14 border-b-2 flex fixed w-full bg-white z-40">
   <header class="flex items-center container mx-auto max-w-full md:w-11/12 2xl:w-6/12">
     <%= live_patch to: Routes.page_path(@socket, :index) do %>
       <h1 class="text-2xl font-bold italic">#InstagramClone</h1>
@@ -15,7 +15,7 @@
             <% end %>
           </li>
           <li class="w-7 h-7 ml-6 text-gray-600">
-            <%= live_patch to: "" do %>
+            <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.New) do %>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -57,10 +57,12 @@
                 <li class="py-2 px-4 hover:bg-gray-50">Profile</li>
               <% end %>
               <li class="py-2 px-4 hover:bg-gray-50">Saved</li>
-              <%= live_patch to: Routes.live_path(@socket, InstagramCloneWeb.UserLive.Settings) do %>
+              <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.UserLive.Settings) do %>
                 <li class="py-2 px-4 hover:bg-gray-50">Settings</li>
               <% end %>
-              <li class="border-t-2 py-2 px-4 hover:bg-gray-50"><%= link "Log Out", to: Routes.user_session_path(@socket, :delete), method: :delete %></li>
+              <%= link to: Routes.user_session_path(@socket, :delete) do %>
+                <li class="border-t-2 py-2 px-4 hover:bg-gray-50">Log Out</li>
+              <% end %>
             </ul>
         <% else %>
           <li>

@@ -22,6 +22,7 @@ defmodule InstagramCloneWeb.Router do
 
     live "/", PageLive, :index
     live "/:username", UserLive.Profile, :index
+    live "/p/:id", PostLive.Show
   end
 
   # Other scopes may use custom stacks.
@@ -68,6 +69,7 @@ defmodule InstagramCloneWeb.Router do
     live "/accounts/password/change", UserLive.PassSettings
     live "/:username/following", UserLive.Profile, :following
     live "/:username/followers", UserLive.Profile, :followers
+    live "/posts/new", PostLive.New
   end
 
   scope "/", InstagramCloneWeb do

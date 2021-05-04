@@ -58,7 +58,7 @@ config :instagram_clone, InstagramCloneWeb.Endpoint,
 config :instagram_clone, InstagramCloneWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/[^uploads].*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/instagram_clone_web/(live|views)/.*(ex)$",
       ~r"lib/instagram_clone_web/templates/.*(eex)$"

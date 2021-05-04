@@ -1,0 +1,54 @@
+<div class="flex flex-col w-1/2 mx-auto">
+  <h2 class="text-xl font-bold text-gray-600"><%= @page_title %></h2>
+
+  <%= f = form_for @changeset, "#",
+    class: "mt-8",
+    phx_change: "validate",
+    phx_submit: "save" %>
+
+    <%= for {_ref, err} <- @uploads.photo_url.errors do %>
+        <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
+    <% end %>
+
+    <div class="border border-dashed border-gray-500 relative" phx-drop-target="<%= @uploads.photo_url.ref %>">
+      <%= live_file_input @uploads.photo_url, class: "cursor-pointer relative block opacity-0 w-full h-full p-20 z-30" %>
+      <div class="text-center p-10 absolute top-0 right-0 left-0 m-auto">
+          <h4>
+              Drop files anywhere to upload
+              <br/>or
+          </h4>
+          <p class="">Select Files</p>
+      </div>
+    </div>
+
+    <%= for entry <- @uploads.photo_url.entries do %>
+      <div class="my-8 flex items-center">
+        <div>
+          <%= live_img_preview entry, height: 250, width: 250 %>
+        </div>
+        <div class="px-4">
+          <progress max="100" value="<%= entry.progress %>" />
+        </div>
+        <span><%= entry.progress %>%</span>
+        <div class="px-4">
+          <a href="#" class="text-red-600 text-lg font-semibold" phx-click="cancel-entry" phx-value-ref="<%= entry.ref %>">cancel</a>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mt-6">
+      <%= label f, :description, class: "font-semibold" %>
+    </div>
+    <div class="mt-3">
+      <%= textarea f, :description, class: "w-full border-2 border-gray-400 rounded p-1 text-semibold text-gray-500 focus:ring-transparent focus:border-gray-600", rows: 5 %>
+      <%= error_tag f, :description, class: "text-red-700 text-sm block" %>
+    </div>
+
+    <div class="mt-6">
+      <%= submit "Submit",
+        phx_disable_with: "Saving...",
+        class: "py-2 px-6 border-none shadow rounded font-semibold text-sm text-gray-50 hover:bg-light-blue-600 bg-light-blue-500 cursor-pointer" %>
+    </div>
+
+  </form>
+</div>

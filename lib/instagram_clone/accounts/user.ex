@@ -17,8 +17,10 @@ defmodule InstagramClone.Accounts.User do
     field :website, :string
     field :followers_count, :integer, default: 0
     field :following_count, :integer, default: 0
+    field :posts_count, :integer, default: 0
     has_many :following, Follows, foreign_key: :follower_id
     has_many :followers, Follows, foreign_key: :followed_id
+    has_many :posts, InstagramClone.Posts.Post
 
     timestamps()
   end
