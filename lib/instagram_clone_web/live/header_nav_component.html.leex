@@ -60,7 +60,7 @@
               <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.UserLive.Settings) do %>
                 <li class="py-2 px-4 hover:bg-gray-50">Settings</li>
               <% end %>
-              <%= link to: Routes.user_session_path(@socket, :delete) do %>
+              <%= link to: Routes.user_session_path(@socket, :delete), method: :delete do %>
                 <li class="border-t-2 py-2 px-4 hover:bg-gray-50">Log Out</li>
               <% end %>
             </ul>

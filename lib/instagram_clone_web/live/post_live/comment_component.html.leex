@@ -1,0 +1,38 @@
+<div class="flex py-2" id="comment-<%= @comment.id %>">
+  <div class="w-1/12 pt-1">
+    <%= live_redirect to: Routes.user_profile_path(@socket, :index, @comment.user.username) do %>
+      <%= img_tag Avatar.get_thumb(@comment.user.avatar_url),
+        class: "w-8 h-8 rounded-full object-cover object-center" %>
+    <% end %>
+  </div>
+  <div class="px-4 w-10/12">
+    <%= live_redirect @comment.user.username,
+          to: Routes.user_profile_path(@socket, :index, @comment.user.username),
+          class: "truncate font-bold text-sm text-gray-500 hover:underline" %>
+    <span class="text-sm text-gray-700">
+      <p class="inline"><%= @comment.body %></p></span>
+    </span>
+    <div class="flex mt-3">
+      <div class="text-gray-400 text-xs"><%= Timex.from_now @comment.inserted_at %></div>
+      <button class="px-3 text-xs text-gray-700 focus:outline-none"><%= @comment.total_likes %> likes</button>
+      <button class="text-xs text-gray-700 focus:outline-none">Reply</button>
+    </div>
+  </div>
+
+  <%= if @current_user do %>
+    <%= live_component @socket,
+        InstagramCloneWeb.PostLive.LikeComponent,
+        id: @comment.id,
+        liked: @comment,
+        w_h: "w-6 h-6",
+        current_user: @current_user %>
+  <% else %>
+    <%= link to: Routes.user_session_path(@socket, :new) do %>
+      <button class="w-6 h-6 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </button>
+    <% end %>
+  <% end %>
+</div>
