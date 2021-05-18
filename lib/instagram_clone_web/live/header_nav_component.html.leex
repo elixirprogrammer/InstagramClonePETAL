@@ -1,6 +1,6 @@
 <div class="h-14 border-b-2 flex fixed w-full bg-white z-40">
   <header class="flex items-center container mx-auto max-w-full md:w-11/12 2xl:w-6/12">
-    <%= live_patch to: Routes.page_path(@socket, :index) do %>
+    <%= live_redirect to: Routes.page_path(@socket, :index) do %>
       <h1 class="text-2xl font-bold italic">#InstagramClone</h1>
     <% end %>
     <div class="w-2/5 flex justify-end"><input type="search" placeholder="Search" class="h-7 bg-gray-50 shadow-sm border-gray-300 focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400  px-0.5 rounded-sm"></div>
@@ -8,7 +8,7 @@
       <ul x-data="{open: false}" class="flex justify-end">
         <%= if @current_user do %>
           <li class="w-7 h-7 text-gray-600">
-            <%= live_patch to: Routes.page_path(@socket, :index) do %>
+            <%= live_redirect to: Routes.page_path(@socket, :index) do %>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>

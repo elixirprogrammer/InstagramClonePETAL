@@ -11,14 +11,9 @@ defmodule InstagramCloneWeb.PageLive do
   @impl true
   def mount(_params, session, socket) do
     socket = assign_defaults(session, socket)
-    current_user = socket.assigns.current_user
-    following_list = Accounts.get_following_list(current_user)
-    accounts_feed_total = Posts.get_accounts_feed_total(following_list, socket.assigns)
 
     {:ok,
       socket
-      |> assign(following_list: following_list)
-      |> assign(accounts_feed_total: accounts_feed_total)
       |> assign(page: 1, per_page: 15),
       temporary_assigns: [user_feed: []]}
   end
@@ -76,9 +71,13 @@ defmodule InstagramCloneWeb.PageLive do
   defp assign_posts(socket) do
     if socket.assigns.current_user do
       current_user = socket.assigns.current_user
+      following_list = Accounts.get_following_list(current_user)
+      accounts_feed_total = Posts.get_accounts_feed_total(following_list, socket.assigns)
       random_5_users = Accounts.random_5(current_user)
 
       socket
+      |> assign(following_list: following_list)
+      |> assign(accounts_feed_total: accounts_feed_total)
       |> assign(users: random_5_users)
       |> assign_user_feed()
     else
