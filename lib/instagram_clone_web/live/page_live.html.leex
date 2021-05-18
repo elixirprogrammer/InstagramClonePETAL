@@ -1,5 +1,70 @@
 <%= if @current_user do %>
-  <h1>User Logged In Homepage</h1>
+  <section class="flex">
+    <div id="user-feed" class="w-3/5" phx-update="append">
+      <%= for post <- @user_feed do %>
+        <%= live_component @socket,
+          InstagramCloneWeb.Live.PagePostFeedComponent,
+          post: post,
+          id: post.id,
+          current_user: @current_user %>
+      <% end %>
+    </div>
+
+
+    <div>
+      <sidebar class="fixed w-1/4">
+        <section class=" ml-auto pl-8">
+          <div class="flex items-center">
+            <!-- Post header section -->
+            <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username) do %>
+              <%= img_tag Avatar.get_thumb(@current_user.avatar_url), class: "w-14 h-14 rounded-full object-cover object-center" %>
+            <% end %>
+            <div class="ml-3">
+              <%= live_redirect @current_user.username,
+                to: Routes.user_profile_path(@socket, :index, @current_user.username),
+                class: "truncate font-bold text-sm text-gray-500 hover:underline" %>
+              <h2 class="text-sm text-gray-500"><%= @current_user.full_name %></h2>
+            </div>
+            <!-- End post header section -->
+          </div>
+          <h1 class="text-gray-500 mt-5">Suggestions For You</h1>
+          <%= for user <- @users do %>
+            <div class="flex items-center p-3">
+              <!-- Post header section -->
+              <%= live_redirect to: Routes.user_profile_path(@socket, :index, user.username) do %>
+                <%= img_tag Avatar.get_thumb(user.avatar_url), class: "w-10 h-10 rounded-full object-cover object-center" %>
+              <% end %>
+              <div class="ml-3">
+                <%= live_redirect user.username,
+                  to: Routes.user_profile_path(@socket, :index, user.username),
+                  class: "truncate font-bold text-sm text-gray-500 hover:underline" %>
+                <h2 class="text-xs text-gray-500">Suggested for you</h2>
+              </div>
+              <span class="ml-auto">
+                <%= live_component @socket,
+                  InstagramCloneWeb.UserLive.FollowComponent,
+                  id: user.id,
+                  user: user,
+                  current_user: @current_user %>
+              </span>
+              <!-- End post header section -->
+            </div>
+          <% end %>
+        </section>
+      </sidebar>
+    </div>
+  </section>
+
+  <div
+    id="profile-posts-footer"
+    class="flex justify-center"
+    phx-hook="ProfilePostsScroll">
+    <svg class="animate-spin mr-3 h-8 w-8 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    Loading More...
+  </div>
 <% else %>
   <%= live_component @socket,
     InstagramCloneWeb.PageLiveComponent,

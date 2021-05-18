@@ -26,6 +26,7 @@ Hooks.ProfilePostsScroll = {
       const entry = entries[0];
       if (entry.isIntersecting) {  
         this.pushEvent("load-more-profile-posts");
+        this.el.remove();
       }
     });
 

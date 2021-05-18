@@ -21,7 +21,7 @@
 
   <%= if @current_user do %>
     <%= live_component @socket,
-        InstagramCloneWeb.PostLive.LikeComponent,
+        InstagramCloneWeb.Live.LikeComponent,
         id: @comment.id,
         liked: @comment,
         w_h: "w-6 h-6",

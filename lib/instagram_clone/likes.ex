@@ -15,7 +15,7 @@ defmodule InstagramClone.Likes do
   end
 
   def unlike(user_id, liked) do
-    like = get_like(user_id, liked)
+    like = liked?(user_id, liked.id)
     update_total_likes = liked.__struct__ |> where(id: ^liked.id)
 
     Ecto.Multi.new()
@@ -26,9 +26,7 @@ defmodule InstagramClone.Likes do
 
 
   # Returns nil if not found
-  defp get_like(user_id, liked) do
-    Enum.find(liked.likes, fn l ->
-      l.user_id == user_id
-    end)
+  def liked?(user_id, liked_id) do
+    Repo.get_by(Like, [user_id: user_id, liked_id: liked_id])
   end
 end

@@ -1,4 +1,4 @@
-defmodule InstagramCloneWeb.PostLive.LikeComponent do
+defmodule InstagramCloneWeb.Live.LikeComponent do
   use InstagramCloneWeb, :live_component
 
   alias InstagramClone.Likes
@@ -27,7 +27,7 @@ defmodule InstagramCloneWeb.PostLive.LikeComponent do
     current_user = socket.assigns.current_user
     liked = socket.assigns.liked
 
-    if liked?(current_user.id, liked.likes) do
+    if Likes.liked?(current_user.id, liked.id) do
       unlike(socket, current_user.id, liked)
     else
       like(socket, current_user, liked)
@@ -54,11 +54,11 @@ defmodule InstagramCloneWeb.PostLive.LikeComponent do
 
   defp send_msg(liked) do
     msg = get_struct_msg_atom(liked)
-    send(self(), {__MODULE__, msg, liked.id})
+    send(self(), {__MODULE__, msg, liked})
   end
 
   defp get_btn_status(socket, assigns) do
-    if liked?(assigns.current_user.id, assigns.liked.likes) do
+    if assigns.current_user.id in assigns.liked.likes do
       get_socket_assigns(socket, assigns, unlike_icon(assigns))
     else
       get_socket_assigns(socket, assigns, like_icon(assigns))
@@ -99,13 +99,6 @@ defmodule InstagramCloneWeb.PostLive.LikeComponent do
       <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
     </svg>
     """
-  end
-
-  # Returns true if id found in list
-  defp liked?(user_id, likes) do
-    Enum.any?(likes, fn l ->
-      l.user_id == user_id
-    end)
   end
 
 end

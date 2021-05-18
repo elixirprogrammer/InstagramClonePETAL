@@ -3,7 +3,7 @@ defmodule InstagramCloneWeb.PostLive.Show do
 
   alias InstagramClone.Posts
   alias InstagramClone.Uploaders.Avatar
-  alias InstagramCloneWeb.PostLive.LikeComponent
+  alias InstagramCloneWeb.Live.LikeComponent
   alias InstagramClone.Comments
   alias InstagramClone.Comments.Comment
 
@@ -47,18 +47,18 @@ defmodule InstagramCloneWeb.PostLive.Show do
   end
 
   @impl true
-  def handle_info({LikeComponent, :update_comment_likes, comment_id}, socket) do
-    comment = Comments.get_comment!(comment_id)
+  def handle_info({LikeComponent, :update_comment_likes, comment}, socket) do
+    comment = Comments.get_comment!(comment.id)
     {:noreply,
       socket
       |> update(:comments, fn comments -> [comment | comments] end)}
   end
 
   @impl true
-  def handle_info({LikeComponent, :update_post_likes, post_id}, socket) do
+  def handle_info({LikeComponent, :update_post_likes, post}, socket) do
     {:noreply,
       socket
-      |> assign(post: Posts.get_post!(post_id))}
+      |> assign(post: Posts.get_post!(post.id))}
   end
 
   @impl true
