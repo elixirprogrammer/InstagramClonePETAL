@@ -1,9 +1,9 @@
 <%= if @current_user do %>
-  <%= live_component @socket, InstagramCloneWeb.HeaderNavComponent, current_user: @current_user %>
+  <%= live_component @socket, InstagramCloneWeb.HeaderNavComponent, id: 1, current_user: @current_user %>
 
 <% else %>
   <%= if @live_action !== :root_path do %>
-    <%= live_component @socket, InstagramCloneWeb.HeaderNavComponent, current_user: @current_user %>
+    <%= live_component @socket, InstagramCloneWeb.HeaderNavComponent, id: 1, current_user: @current_user %>
   <% end %>
 <% end %>
 

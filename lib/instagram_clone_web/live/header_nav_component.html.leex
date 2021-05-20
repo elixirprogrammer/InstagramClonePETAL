@@ -3,7 +3,50 @@
     <%= live_redirect to: Routes.page_path(@socket, :index) do %>
       <h1 class="text-2xl font-bold italic">#InstagramClone</h1>
     <% end %>
-    <div class="w-2/5 flex justify-end"><input type="search" placeholder="Search" class="h-7 bg-gray-50 shadow-sm border-gray-300 focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400  px-0.5 rounded-sm"></div>
+    <div x-data="{open: false, inputText: null}" class="w-2/5 flex justify-end relative">
+      <form id="search-users-form" phx-change="search_users" phx-target="<%= @myself %>">
+        <input
+          phx-debounce="800"
+          x-model="inputText"
+          x-on:input="[(inputText.length != 0) ? open = true : open = false]"
+          name="q"
+          type="search"
+          placeholder="Search"
+          autocomplete="off"
+          class="h-7 bg-gray-50 shadow-sm border-gray-300 focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400  px-0.5 rounded-sm">
+      </form>
+
+      <ul
+      x-show="open"
+      @click.away="open = false"
+      class="<%= @overflow_y_scroll_ul %> absolute top-10 -right-24 w-96 shadow-md h-96 bg-gray-50">
+
+        <%= for user <- @searched_users do %>
+          <%= live_redirect to: Routes.user_profile_path(@socket, :index, user.username) do %>
+            <li class="flex items-center px-4 py-3 hover:bg-gray-100">
+              <%= img_tag Avatar.get_thumb(user.avatar_url), class: "w-10 h-10 rounded-full object-cover object-center" %>
+              <div class="ml-3">
+                <h2 class="truncate font-bold text-sm text-gray-500"><%= user.username %></h2>
+                <h3 class="truncate text-sm text-gray-500"><%= user.full_name %></h3>
+              </div>
+            </li>
+          <% end %>
+        <% end %>
+
+        <%= if @while_searching_users? do %>
+          <li class="flex justify-center items-center h-full">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          </li>
+        <% end %>
+
+        <%= if @users_not_found? do %>
+          <li class="text-sm text-gray-400 flex justify-center items-center h-full">No results found.</li>
+        <% end %>
+      </ul>
+    </div>
     <nav class="w-3/5 relative">
       <ul x-data="{open: false}" class="flex justify-end">
         <%= if @current_user do %>

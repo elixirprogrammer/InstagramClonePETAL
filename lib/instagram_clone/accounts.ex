@@ -469,4 +469,12 @@ defmodule InstagramClone.Accounts do
     |> Repo.all()
   end
 
+  def search_users(q) do
+    User
+    |> where([u], ilike(u.username, ^"%#{q}%"))
+    |> or_where([u], ilike(u.full_name, ^"%#{q}%"))
+    |> select([u], map(u, [:avatar_url, :username, :full_name]))
+    |> Repo.all()
+  end
+
 end
