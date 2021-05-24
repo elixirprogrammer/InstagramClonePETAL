@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@heroku/buildpack-registry": "^1.0.1"
+  }
+}

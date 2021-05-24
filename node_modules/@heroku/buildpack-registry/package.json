@@ -1,0 +1,45 @@
+{
+  "name": "@heroku/buildpack-registry",
+  "version": "1.0.1",
+  "description": "Node.js/TypeScript library for interfacing with the Heroku Buildpack Registry",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare": "tsc",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heroku/buildpack-registry.js.git"
+  },
+  "author": "Terence Lee <hone02@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/heroku/buildpack-registry.js/issues"
+  },
+  "homepage": "https://github.com/heroku/buildpack-registry.js#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/nock": "^9.3.0",
+    "@types/node": "^10.7.1",
+    "@types/node-fetch": "^2.1.2",
+    "mocha": "^5",
+    "nock": "^9.2.6",
+    "nyc": "^11",
+    "ts-node": "^6",
+    "tslint": "^5.11.0",
+    "typescript": "^2.8"
+  },
+  "dependencies": {
+    "node-fetch": "^2.2.0",
+    "true-myth": "^2.0.0"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "files": [
+    "/dist"
+  ]
+}
