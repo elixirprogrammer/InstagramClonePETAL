@@ -8,7 +8,7 @@ defmodule InstagramClone.Repo.Migrations.CreatePosts do
       add :photo_url, :string
       add :total_likes, :integer, default: 0
       add :total_comments, :integer, default: 0
-      add :user_id, references(:users, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end

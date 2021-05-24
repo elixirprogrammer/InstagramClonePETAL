@@ -4,8 +4,8 @@ defmodule InstagramClone.Repo.Migrations.CreateComments do
   def change do
     create table(:comments) do
       add :body, :text
-      add :post_id, references(:posts, on_delete: :nothing)
-      add :user_id, references(:users, on_delete: :nothing)
+      add :post_id, references(:posts, on_delete: :delete_all)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end
