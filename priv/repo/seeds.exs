@@ -74,10 +74,9 @@ end
 Repo.delete_all(Post)
 # Creates posts for all users
 for user <- users do
-  range_start = Enum.random(8..15)
-  range_last = Enum.random(20..25)
+  range_last = Enum.random(15..25)
 
-  for _ <- range_start..range_last do
+  for _ <- 1..range_last do
     attrs = %{
       "description" => Faker.Lorem.paragraph(1..2),
       "photo_url" => "https://picsum.photos/id/#{:rand.uniform(500)}/900"
