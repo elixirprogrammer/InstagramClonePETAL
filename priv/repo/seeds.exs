@@ -52,7 +52,7 @@ users = Repo.all(User)
 
 # Gets random users to be followers
 rand_followers = fn (user) ->
-  limit_n = Enum.random(20..55)
+  limit_n = Enum.random(10..30)
 
   User
   |> where([u], u.id != ^user.id)
@@ -74,8 +74,8 @@ end
 Repo.delete_all(Post)
 # Creates posts for all users
 for user <- users do
-  range_start = Enum.random(15..25)
-  range_last = Enum.random(35..60)
+  range_start = Enum.random(15..20)
+  range_last = Enum.random(25..30)
 
   for _ <- range_start..range_last do
     attrs = %{
@@ -104,7 +104,7 @@ end
 Repo.delete_all(Like)
 # Adds likes to all posts
 for post <- posts do
-  for user <- rand_users.(30..60) do
+  for user <- rand_users.(15..30) do
     Likes.create_like(user, post)
   end
 end
@@ -113,7 +113,7 @@ end
 Repo.delete_all(Comment)
 # Adds comments to all posts
 for post <- posts do
-  for user <- rand_users.(15..50) do
+  for user <- rand_users.(10..20) do
     attrs = %{"body" => Faker.Lorem.paragraph(1..2)}
     Comments.create_comment(user, post, attrs)
   end
