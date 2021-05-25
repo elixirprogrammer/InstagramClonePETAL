@@ -12,7 +12,7 @@ You are encouraged to create an account, but if you want to get a feel of Lancer
 - faker2@fake.com
 - faker3@fake.com
 - faker4@fake.com
-...
+- ...
 - faker98@fake.com
 - faker99@fake.com
 - faker100@fake.com
