@@ -31,21 +31,36 @@ defmodule InstagramCloneWeb.PostLive.New do
 
   def handle_event("save", %{"post" => post_params}, socket) do
     post = PostUploader.put_image_url(socket, %Post{})
+
     case Posts.create_post(post, post_params, socket.assigns.current_user) do
-      {:ok, _post} ->
+      {:ok, %{post: post}} ->
         PostUploader.save(socket)
+
+        send_msg(post)
 
         {:noreply,
          socket
          |> put_flash(:info, "Post created successfully")
-         |> push_redirect(to: Routes.user_profile_path(socket, :index, socket.assigns.current_user.username))}
+         |> push_redirect(to: Routes.live_path(socket, InstagramCloneWeb.PostLive.Show, post.url_id))}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, :post, %Ecto.Changeset{} = changeset, %{}} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
 
   def handle_event("cancel-entry", %{"ref" => ref}, socket) do
     {:noreply, cancel_upload(socket, :photo_url, ref)}
+  end
+
+  defp send_msg(post) do
+    # Broadcast to that new post was added
+    InstagramCloneWeb.Endpoint.broadcast_from(
+      self(),
+      Posts.pubsub_topic,
+      "new_post",
+      %{
+        post: post
+      }
+    )
   end
 end

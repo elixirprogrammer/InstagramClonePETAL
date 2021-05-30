@@ -5,15 +5,19 @@ defmodule InstagramCloneWeb.PageLive do
   alias InstagramClone.Accounts
   alias InstagramCloneWeb.UserLive.FollowComponent
   alias InstagramClone.Posts
+  alias InstagramClone.Posts.Post
   alias InstagramCloneWeb.Live.LikeComponent
 
 
   @impl true
   def mount(_params, session, socket) do
     socket = assign_defaults(session, socket)
+    if connected?(socket), do: Posts.subscribe
 
     {:ok,
       socket
+      |> assign(page_title: "InstagraClone")
+      |> assign(new_posts_added: false)
       |> assign(page: 1, per_page: 15),
       temporary_assigns: [user_feed: []]}
   end
@@ -62,6 +66,15 @@ defmodule InstagramCloneWeb.PageLive do
     {:noreply,
       socket
       |> update(:user_feed, fn user_feed -> [post_feed | user_feed] end)}
+  end
+
+  @impl true
+  def handle_info(%{event: "new_post", payload: %{post: %Post{user_id: post_user_id}}}, socket) do
+    if post_user_id in socket.assigns.following_list do
+      {:noreply, socket |> assign(new_posts_added: true)}
+    else
+      {:noreply, socket}
+    end
   end
 
   defp apply_action(current_user) do

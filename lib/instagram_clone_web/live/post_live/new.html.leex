@@ -20,6 +20,9 @@
           <p class="">Select Files</p>
       </div>
     </div>
+    <div class="flex justify-center">
+      <%= error_tag f, :photo_url, class: "text-red-700 block" %>
+    </div>
 
     <%= for entry <- @uploads.photo_url.entries do %>
       <div class="my-8 flex items-center">

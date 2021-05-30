@@ -10,7 +10,15 @@ defmodule InstagramClone.Posts do
   alias InstagramClone.Accounts.User
   alias InstagramClone.Comments.Comment
   alias InstagramClone.Likes.Like
+  alias InstagramClone.Posts.Bookmarks
 
+  @pubsub_topic "new_posts_added"
+
+  def pubsub_topic, do: @pubsub_topic
+
+  def subscribe do
+    InstagramCloneWeb.Endpoint.subscribe(@pubsub_topic)
+  end
   @doc """
   Returns the list of posts.
 
@@ -43,6 +51,16 @@ defmodule InstagramClone.Posts do
     |> Repo.all
   end
 
+  def list_saved_profile_posts(page: page, per_page: per_page, user_id: user_id) do
+    Bookmarks
+    |> where(user_id: ^user_id)
+    |> join(:inner, [b], p in assoc(b, :post))
+    |> select([b, p], %{url_id: p.url_id, photo_url: p.photo_url})
+    |> limit(^per_page)
+    |> offset(^((page - 1) * per_page))
+    |> order_by(desc: :id)
+    |> Repo.all
+  end
   @doc """
   Returns the list of paginated posts of a given user id
   And posts of following list of given user id
@@ -69,6 +87,7 @@ defmodule InstagramClone.Posts do
       join: r in subquery(query),
       on: c.id == r.id and r.row_number <= 2
     likes_query = Like |> select([l], l.user_id)
+    bookmarks_query = Bookmarks |> select([b], b.user_id)
 
     Post
     |> where([p], p.user_id in ^following_list)
@@ -76,7 +95,7 @@ defmodule InstagramClone.Posts do
     |> limit(^per_page)
     |> offset(^((page - 1) * per_page))
     |> order_by(desc: :id)
-    |> preload([:user, likes: ^likes_query, comments: ^{comments_query, [:user, likes: likes_query]}])
+    |> preload([:user, posts_bookmarks: ^bookmarks_query, likes: ^likes_query, comments: ^{comments_query, [:user, likes: likes_query]}])
     |> Repo.all()
   end
 
@@ -106,9 +125,10 @@ defmodule InstagramClone.Posts do
   """
   def get_post!(id) do
     likes_query = Like |> select([l], l.user_id)
+    bookmarks_query = Bookmarks |> select([b], b.user_id)
 
     Repo.get!(Post, id)
-    |> Repo.preload([:user, likes: likes_query])
+    |> Repo.preload([:user, posts_bookmarks: bookmarks_query, likes: likes_query])
   end
 
   def get_post_feed!(id) do
@@ -121,17 +141,19 @@ defmodule InstagramClone.Posts do
       join: r in subquery(query),
       on: c.id == r.id and r.row_number <= 2
     likes_query = Like |> select([l], l.user_id)
+    bookmarks_query = Bookmarks |> select([b], b.user_id)
 
     Post
-    |> preload([:user, likes: ^likes_query, comments: ^{comments_query, [:user, likes: likes_query]}])
+    |> preload([:user, posts_bookmarks: ^bookmarks_query, likes: ^likes_query, comments: ^{comments_query, [:user, likes: likes_query]}])
     |> Repo.get!(id)
   end
 
   def get_post_by_url!(id) do
     likes_query = Like |> select([l], l.user_id)
+    bookmarks_query = Bookmarks |> select([b], b.user_id)
 
     Repo.get_by!(Post, url_id: id)
-    |> Repo.preload([:user, likes: likes_query])
+    |> Repo.preload([:user, posts_bookmarks: bookmarks_query, likes: likes_query])
   end
 
   @doc """
@@ -209,5 +231,28 @@ defmodule InstagramClone.Posts do
   """
   def change_post(%Post{} = post, attrs \\ %{}) do
     Post.changeset(post, attrs)
+  end
+
+  # Returns nil if not found
+  def bookmarked?(user_id, post_id) do
+    Repo.get_by(Bookmarks, [user_id: user_id, post_id: post_id])
+  end
+
+  def create_bookmark(user, post) do
+    user = Ecto.build_assoc(user, :posts_bookmarks)
+    post = Ecto.build_assoc(post, :posts_bookmarks, user)
+
+    Repo.insert(post)
+  end
+
+  def unbookmark(bookmarked?) do
+    Repo.delete(bookmarked?)
+  end
+
+  def count_user_saved(user) do
+    Bookmarks
+    |> where(user_id: ^user.id)
+    |> select([b], count(b.id))
+    |> Repo.one
   end
 end

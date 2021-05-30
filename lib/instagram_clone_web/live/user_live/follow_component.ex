@@ -26,7 +26,7 @@ defmodule InstagramCloneWeb.UserLive.FollowComponent do
         </span>
       </span>
 
-      <span class="<%= @follow_btn_styles %> btns"><%= @follow_btn_name %><span>
+      <span class="<%= @follow_btn_styles %>"><%= @follow_btn_name %><span>
     </button>
     """
   end
