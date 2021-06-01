@@ -61,7 +61,7 @@ defmodule InstagramCloneWeb.UserLive.Profile do
   end
 
   defp get_total_posts_count(socket) do
-    if Map.has_key?(socket.assigns, :saved_page?) do
+    if socket.assigns.saved_page? do
       Posts.count_user_saved(socket.assigns.user)
     else
       socket.assigns.user.posts_count
@@ -69,7 +69,7 @@ defmodule InstagramCloneWeb.UserLive.Profile do
   end
 
   defp get_posts(socket) do
-    if Map.has_key?(socket.assigns, :saved_page?) do
+    if socket.assigns.saved_page? do
       assign_saved_posts(socket)
     else
       assign_posts(socket)
@@ -97,24 +97,20 @@ defmodule InstagramCloneWeb.UserLive.Profile do
   defp apply_action(socket, :index) do
     selected_link_styles = "text-gray-600 border-t-2 border-black -mt-0.5"
     live_action = get_live_action(socket.assigns.user, socket.assigns.current_user)
-    show_load_more_footer? = if socket.assigns.user.posts_count > 15, do: true, else: false
 
     socket
-    |> assign(show_load_more_footer?: show_load_more_footer?)
     |> assign(selected_index: selected_link_styles)
     |> assign(selected_saved: "text-gray-400")
-    |> show_saved_profile_link?()
+    |> assign(saved_page?: false)
     |> assign(live_action: live_action)
+    |> show_saved_profile_link?()
     |> assign_posts()
   end
 
   defp apply_action(socket, :saved) do
     selected_link_styles = "text-gray-600 border-t-2 border-black -mt-0.5"
-    user_saved_posts_count = Posts.count_user_saved(socket.assigns.user)
-    show_load_more_footer? = if user_saved_posts_count > 15, do: true, else: false
 
     socket
-    |> assign(show_load_more_footer?: show_load_more_footer?)
     |> assign(selected_index: "text-gray-400")
     |> assign(selected_saved: selected_link_styles)
     |> assign(live_action: :edit_profile)
