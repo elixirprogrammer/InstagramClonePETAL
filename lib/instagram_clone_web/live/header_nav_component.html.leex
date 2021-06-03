@@ -75,9 +75,111 @@
             </svg>
           </li>
           <li class="w-7 h-7 ml-6 text-gray-600">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              <span class="rounded-full w-1.5 h-1.5 bg-red-500 absolute top-7 left-3"></span>
+            </div>
+
+            <ul
+              class="overflow-y-scroll absolute -right-2 top-10 w-full shadow-md h-96 bg-gray-50">
+
+                <li class="flex items-center px-4 py-3">
+                  <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username), class: "w-10" do %>
+                    <%= img_tag Avatar.get_thumb(@current_user.avatar_url), class: "w-9 h-9 rounded-full object-cover object-center" %>
+                  <% end %>
+                  <div class="mx-2 w-4/5">
+                    <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username) do %>
+                      <span class="font-bold text-sm text-gray-500">
+                        <%= @current_user.username %>
+                      </span>
+                      <span>started following you.</span>
+                      <span class="text-gray-400 text-xs">2 weeks ago</span>
+                    <% end %>
+                  </div>
+                  <div class="ml-auto">
+                    <%= live_component @socket,
+                      InstagramCloneWeb.UserLive.FollowComponent,
+                      id: @current_user.id,
+                      user: @current_user,
+                      current_user: @current_user %>
+                  </div>
+                </li>
+                <li class="flex items-center px-4 py-3">
+                  <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username), class: "w-10" do %>
+                    <%= img_tag Avatar.get_thumb(@current_user.avatar_url), class: "w-9 h-9 rounded-full object-cover object-center" %>
+                  <% end %>
+                  <div class="mx-2 w-4/5">
+                    <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username) do %>
+                      <span class="font-bold text-sm text-gray-500">
+                        <%= @current_user.username %>
+                      </span>
+                    <% end %>
+                    <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.Show, "uXTY48s7mS4") do %>
+                      <span>liked your photo.</span>
+                      <span class="text-gray-400 text-xs">9s ago</span>
+                    <% end %>
+                  </div>
+                  <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.Show, "uXTY48s7mS4"), class: "ml-auto w-11" do %>
+                    <%= img_tag "https://picsum.photos/id/101/900", class: "w-10 h-10 object-cover object-center" %>
+                  <% end %>
+                </li>
+                <li class="flex items-center px-4 py-3">
+                  <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username), class: "w-10" do %>
+                    <%= img_tag Avatar.get_thumb(@current_user.avatar_url), class: "w-9 h-9 rounded-full object-cover object-center" %>
+                  <% end %>
+                  <div class="mx-2 w-4/5">
+                    <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username) do %>
+                      <span class="font-bold text-sm text-gray-500">
+                        <%= @current_user.username %>
+                      </span>
+                    <% end %>
+                    <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.Show, "uXTY48s7mS4") do %>
+                      <span>liked your comment: comment</span>
+                      <span class="text-gray-400 text-xs">1 week ago</span>
+                    <% end %>
+                  </div>
+                  <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.Show, "uXTY48s7mS4"), class: "ml-auto w-11" do %>
+                    <%= img_tag "https://picsum.photos/id/101/900", class: "w-10 h-10 object-cover object-center" %>
+                  <% end %>
+                </li>
+                <li class="flex items-center px-4 py-3">
+                  <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username), class: "w-10" do %>
+                    <%= img_tag Avatar.get_thumb(@current_user.avatar_url), class: "w-9 h-9 rounded-full object-cover object-center" %>
+                  <% end %>
+
+                  <div class="mx-2 w-4/5">
+                    <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username) do %>
+                      <span class="font-bold text-sm text-gray-500">
+                        <%= @current_user.username %>
+                      </span>
+                    <% end %>
+                    <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.Show, "uXTY48s7mS4") do %>
+                      <span>commented: Some lomg test comment commenter commentary test testing a lot some to do.</span>
+                      <span class="text-gray-400 text-xs">1 week ago</span>
+                    <% end %>
+                  </div>
+
+                  <%= live_redirect to: Routes.live_path(@socket, InstagramCloneWeb.PostLive.Show, "uXTY48s7mS4"), class: "ml-auto w-11" do %>
+                    <%= img_tag "https://picsum.photos/id/101/900", class: "w-10 h-10 object-cover object-center" %>
+                  <% end %>
+                </li>
+
+
+              <%= if @while_searching_users? do %>
+                <li class="flex justify-center items-center h-full">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                </li>
+              <% end %>
+
+              <%= if @users_not_found? do %>
+                <li class="text-sm text-gray-400 flex justify-center items-center h-full">No results found.</li>
+              <% end %>
+            </ul>
           </li>
           <li
             @click="open = true"
