@@ -19,11 +19,11 @@
       <ul
       x-show="open"
       @click.away="open = false"
-      class="<%= @overflow_y_scroll_ul %> absolute top-10 -right-24 w-96 shadow-md h-96 bg-gray-50">
+      class="<%= @overflow_y_scroll_ul %> absolute top-10 -right-24 w-96 shadow-md h-96 bg-white">
 
         <%= for user <- @searched_users do %>
           <%= live_redirect to: Routes.user_profile_path(@socket, :index, user.username) do %>
-            <li class="flex items-center px-4 py-3 hover:bg-gray-100">
+            <li class="flex items-center px-4 py-3 hover:bg-gray-50">
               <%= img_tag Avatar.get_thumb(user.avatar_url), class: "w-10 h-10 rounded-full object-cover object-center" %>
               <div class="ml-3">
                 <h2 class="truncate font-bold text-sm text-gray-500"><%= user.username %></h2>
@@ -83,7 +83,7 @@
             </div>
 
             <ul
-              class="overflow-y-scroll absolute -right-2 top-10 w-full shadow-md h-96 bg-gray-50">
+              class="overflow-y-scroll absolute -right-2 top-10 w-full shadow-md h-96 bg-white">
 
                 <li class="flex items-center px-4 py-3">
                   <%= live_redirect to: Routes.user_profile_path(@socket, :index, @current_user.username), class: "w-10" do %>
