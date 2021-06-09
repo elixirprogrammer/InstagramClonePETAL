@@ -8,6 +8,7 @@ defmodule InstagramClone.Comments.Comment do
     belongs_to :post, InstagramClone.Posts.Post
     belongs_to :user, InstagramClone.Accounts.User
     has_many :likes, InstagramClone.Likes.Like, foreign_key: :liked_id
+    has_many :notifications, InstagramClone.Notifications.Notification
 
     timestamps()
   end
