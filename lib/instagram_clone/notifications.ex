@@ -8,6 +8,13 @@ defmodule InstagramClone.Notifications do
 
   alias InstagramClone.Notifications.Notification
 
+  @actions %{
+    following_action: "following",
+    post_action: "post_like",
+    comment_action: "comment",
+    comment_like_action: "comment_like"
+  }
+
   @doc """
   Returns the list of notifications.
 
@@ -19,6 +26,14 @@ defmodule InstagramClone.Notifications do
   """
   def list_notifications do
     Repo.all(Notification)
+  end
+
+  def list_user_notifications(user_id) do
+    Notification
+    |> where(user_id: ^user_id)
+    |> where([n], n.inserted_at >= datetime_add(^NaiveDateTime.utc_now(), -1, "week") )
+    |> preload(:actor)
+    |> Repo.all
   end
 
   @doc """
@@ -37,40 +52,100 @@ defmodule InstagramClone.Notifications do
   """
   def get_notification!(id), do: Repo.get!(Notification, id)
 
-  @doc """
-  Creates a notification.
+  def create_following_notification(user: user, actor: actor) do
+    user = Ecto.build_assoc(user, :notifications, action: @actions.following_action)
+    notification = Ecto.build_assoc(actor, :actors, user)
 
-  ## Examples
-
-      iex> create_notification(%{field: value})
-      {:ok, %Notification{}}
-
-      iex> create_notification(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_notification(attrs \\ %{}) do
-    %Notification{}
-    |> Notification.changeset(attrs)
-    |> Repo.insert()
+    Repo.insert(notification)
   end
 
-  @doc """
-  Updates a notification.
+  def create_post_notification(actor: actor, post: post) do
+    actor =
+      Ecto.build_assoc(
+        actor,
+        :actors,
+        action: @actions.post_action,
+        user_id: post.user_id
+      )
+    notification = Ecto.build_assoc(post, :notifications, actor)
 
-  ## Examples
+    Repo.insert(notification)
+  end
 
-      iex> update_notification(notification, %{field: new_value})
-      {:ok, %Notification{}}
+  def create_comment_notification(actor: actor, post: post, comment: comment) do
+    actor =
+      Ecto.build_assoc(
+        actor,
+        :actors,
+        action: @actions.comment_action,
+        user_id: post.user_id,
+        post_id: post.id
+      )
+    notification = Ecto.build_assoc(comment, :notifications, actor)
 
-      iex> update_notification(notification, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+    Repo.insert(notification)
+  end
 
-  """
-  def update_notification(%Notification{} = notification, attrs) do
-    notification
-    |> Notification.changeset(attrs)
-    |> Repo.update()
+  def create_comment_like_notification(actor: actor, comment: comment) do
+    preload_post = Repo.preload(comment, :post)
+    post = preload_post.post
+    actor =
+      Ecto.build_assoc(
+        actor,
+        :actors,
+        action: @actions.comment_like_action,
+        user_id: comment.user_id,
+        post_id: post.id
+      )
+    notification = Ecto.build_assoc(comment, :notifications, actor)
+
+    Repo.insert(notification)
+  end
+
+  def delete_following_notification(user_id: user_id, actor_id: actor_id) do
+    notification =
+      Repo.get_by!(
+        Notification,
+        user_id: user_id,
+        actor_id: actor_id,
+        action: @actions.following_action
+      )
+
+    Repo.delete(notification)
+  end
+
+  def delete_post_notification(actor_id: actor_id, post: post) do
+    notification =
+      Repo.get_by!(
+        Notification,
+        user_id: post.user_id,
+        actor_id: actor_id,
+        post_id: post.id,
+        action: @actions.post_action
+      )
+
+    Repo.delete(notification)
+  end
+
+  def delete_comment_like_notification(actor_id: actor_id, comment: comment) do
+    preload_post = Repo.preload(comment, :post)
+    post = preload_post.post
+    notification =
+      Repo.get_by!(
+        Notification,
+        user_id: comment.user_id,
+        actor_id: actor_id,
+        post_id: post.id,
+        comment_id: comment.id,
+        action: @actions.comment_like_action
+      )
+
+    Repo.delete(notification)
+  end
+
+  def read do
+    Notification
+    |> Repo.update_all(set: [read: true])
   end
 
   @doc """
@@ -89,16 +164,4 @@ defmodule InstagramClone.Notifications do
     Repo.delete(notification)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking notification changes.
-
-  ## Examples
-
-      iex> change_notification(notification)
-      %Ecto.Changeset{data: %Notification{}}
-
-  """
-  def change_notification(%Notification{} = notification, attrs \\ %{}) do
-    Notification.changeset(notification, attrs)
-  end
 end

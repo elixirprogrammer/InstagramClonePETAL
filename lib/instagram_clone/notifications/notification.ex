@@ -1,9 +1,9 @@
 defmodule InstagramClone.Notifications.Notification do
   use Ecto.Schema
-  import Ecto.Changeset
 
   schema "notifications" do
     field :action, :string
+    field :read, :boolean, default: false
     belongs_to :user, InstagramClone.Accounts.User
     belongs_to :actor, InstagramClone.Accounts.User
     belongs_to :comment, InstagramClone.Comments.Comment
@@ -12,10 +12,4 @@ defmodule InstagramClone.Notifications.Notification do
     timestamps()
   end
 
-  @doc false
-  def changeset(notification, attrs) do
-    notification
-    |> cast(attrs, [:action])
-    |> validate_required([:action])
-  end
 end

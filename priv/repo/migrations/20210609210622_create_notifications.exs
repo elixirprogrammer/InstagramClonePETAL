@@ -4,6 +4,7 @@ defmodule InstagramClone.Repo.Migrations.CreateNotifications do
   def change do
     create table(:notifications) do
       add :action, :string
+      add :read, :boolean, default: false
       add :user_id, references(:users, on_delete: :delete_all)
       add :actor_id, references(:users, on_delete: :delete_all)
       add :comment_id, references(:comments, on_delete: :delete_all)
