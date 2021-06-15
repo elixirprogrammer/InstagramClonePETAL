@@ -7,6 +7,8 @@ defmodule InstagramClone.Notifications do
   alias InstagramClone.Repo
 
   alias InstagramClone.Notifications.Notification
+  alias InstagramClone.Posts.Post
+  alias InstagramClone.Comments.Comment
 
   @actions %{
     following_action: "following",
@@ -25,7 +27,7 @@ defmodule InstagramClone.Notifications do
 
   """
   def list_notifications do
-    Repo.all(Notification)
+    Repo.all(Notification) |> Repo.preload(:actor)
   end
 
   def list_user_notifications(user_id) do
@@ -146,6 +148,33 @@ defmodule InstagramClone.Notifications do
   def read do
     Notification
     |> Repo.update_all(set: [read: true])
+  end
+
+  def set_preload(notification, :post_like) do
+    post_query =
+      Post
+      |> select([p], %{url_id: p.url_id, photo_url: p.photo_url})
+
+    notification |> Repo.preload(post: post_query)
+  end
+
+  def set_preload(notification, :comment_like) do
+    set_notification_preload(notification)
+  end
+
+  def set_preload(notification, :comment) do
+    set_notification_preload(notification)
+  end
+
+  defp set_notification_preload(notification) do
+    post_query =
+      Post
+      |> select([p], %{url_id: p.url_id, photo_url: p.photo_url})
+    comment_query =
+      Comment
+      |> select([c], %{body: c.body})
+
+    notification |> Repo.preload(post: post_query, comment: comment_query)
   end
 
   @doc """
