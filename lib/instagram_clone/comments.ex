@@ -4,9 +4,11 @@ defmodule InstagramClone.Comments do
   """
 
   import Ecto.Query, warn: false
+
   alias InstagramClone.Repo
   alias InstagramClone.Likes.Like
   alias InstagramClone.Comments.Comment
+  alias InstagramClone.Notifications
 
   @doc """
   Returns the list of comments.
@@ -92,6 +94,11 @@ defmodule InstagramClone.Comments do
     |> Repo.transaction()
     |> case do
       {:ok, %{comment: comment}} ->
+        Notifications.build_comment_notification(
+          actor: user,
+          post: post,
+          comment: comment
+        )
         likes_query = Like |> select([l], l.user_id)
         comment |> Repo.preload(likes: likes_query)
     end

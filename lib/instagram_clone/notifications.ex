@@ -54,14 +54,14 @@ defmodule InstagramClone.Notifications do
   """
   def get_notification!(id), do: Repo.get!(Notification, id)
 
-  def create_following_notification(user: user, actor: actor) do
+  def build_following_notification(user: user, actor: actor) do
     user = Ecto.build_assoc(user, :notifications, action: @actions.following_action)
     notification = Ecto.build_assoc(actor, :actors, user)
 
-    Repo.insert(notification)
+    notification
   end
 
-  def create_post_notification(actor: actor, post: post) do
+  def build_post_notification(actor: actor, post: post) do
     actor =
       Ecto.build_assoc(
         actor,
@@ -71,10 +71,10 @@ defmodule InstagramClone.Notifications do
       )
     notification = Ecto.build_assoc(post, :notifications, actor)
 
-    Repo.insert(notification)
+    notification
   end
 
-  def create_comment_notification(actor: actor, post: post, comment: comment) do
+  def build_comment_notification(actor: actor, post: post, comment: comment) do
     actor =
       Ecto.build_assoc(
         actor,
@@ -88,7 +88,7 @@ defmodule InstagramClone.Notifications do
     Repo.insert(notification)
   end
 
-  def create_comment_like_notification(actor: actor, comment: comment) do
+  def build_comment_like_notification(actor: actor, comment: comment) do
     preload_post = Repo.preload(comment, :post)
     post = preload_post.post
     actor =
@@ -101,22 +101,19 @@ defmodule InstagramClone.Notifications do
       )
     notification = Ecto.build_assoc(comment, :notifications, actor)
 
-    Repo.insert(notification)
+    notification
   end
 
-  def delete_following_notification(user_id: user_id, actor_id: actor_id) do
-    notification =
-      Repo.get_by!(
-        Notification,
-        user_id: user_id,
-        actor_id: actor_id,
-        action: @actions.following_action
-      )
-
-    Repo.delete(notification)
+  def get_following_notification(user_id: user_id, actor_id: actor_id) do
+    Repo.get_by!(
+      Notification,
+      user_id: user_id,
+      actor_id: actor_id,
+      action: @actions.following_action
+    )
   end
 
-  def delete_post_notification(actor_id: actor_id, post: post) do
+  def get_post_notification(actor_id: actor_id, post: post) do
     notification =
       Repo.get_by!(
         Notification,
@@ -126,10 +123,10 @@ defmodule InstagramClone.Notifications do
         action: @actions.post_action
       )
 
-    Repo.delete(notification)
+    notification
   end
 
-  def delete_comment_like_notification(actor_id: actor_id, comment: comment) do
+  def get_comment_like_notification(actor_id: actor_id, comment: comment) do
     preload_post = Repo.preload(comment, :post)
     post = preload_post.post
     notification =
@@ -142,7 +139,7 @@ defmodule InstagramClone.Notifications do
         action: @actions.comment_like_action
       )
 
-    Repo.delete(notification)
+    notification
   end
 
   def read do

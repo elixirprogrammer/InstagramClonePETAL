@@ -8,6 +8,7 @@ defmodule InstagramClone.Accounts do
   alias InstagramClone.Accounts.{User, UserToken, UserNotifier}
   alias InstagramCloneWeb.UserAuth
   alias InstagramClone.Accounts.Follows
+  alias InstagramClone.Notifications
 
   ## Database getters
 
@@ -384,9 +385,15 @@ defmodule InstagramClone.Accounts do
     follow = Ecto.build_assoc(followed, :followers, follower)
     update_following_count = from(u in User, where: u.id == ^user.id)
     update_followers_count = from(u in User, where: u.id == ^followed.id, select: u)
+    notification =
+      Notifications.build_following_notification(
+        user: followed,
+        actor: user
+      )
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:follow, follow)
+    |> Ecto.Multi.insert(:notification, notification)
     |> Ecto.Multi.update_all(:update_following, update_following_count, inc: [following_count: 1])
     |> Ecto.Multi.update_all(:update_followers, update_followers_count, inc: [followers_count: 1])
     |> Repo.transaction()
@@ -407,9 +414,15 @@ defmodule InstagramClone.Accounts do
     follow = following?(follower_id, followed_id)
     update_following_count = from(u in User, where: u.id == ^follower_id)
     update_followers_count = from(u in User, where: u.id == ^followed_id, select: u)
+    notification =
+      Notifications.get_following_notification(
+        user_id: followed_id,
+        actor_id: follower_id
+      )
 
     Ecto.Multi.new()
     |> Ecto.Multi.delete(:follow, follow)
+    |> Ecto.Multi.delete(:notification, notification)
     |> Ecto.Multi.update_all(:update_following, update_following_count, inc: [following_count: -1])
     |> Ecto.Multi.update_all(:update_followers, update_followers_count, inc: [followers_count: -1])
     |> Repo.transaction()
