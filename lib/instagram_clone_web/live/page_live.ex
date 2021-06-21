@@ -16,7 +16,7 @@ defmodule InstagramCloneWeb.PageLive do
 
     {:ok,
       socket
-      |> assign(page_title: "InstagraClone")
+      |> assign(page_title: "InstagramClone")
       |> assign(new_posts_added: false)
       |> assign(page: 1, per_page: 15),
       temporary_assigns: [user_feed: []]}

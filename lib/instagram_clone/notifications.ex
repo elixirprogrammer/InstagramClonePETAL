@@ -142,9 +142,17 @@ defmodule InstagramClone.Notifications do
     notification
   end
 
-  def read do
+  def read(user_id) do
+    query = from(n in Notification, where: n.user_id == ^user_id)
+
+    Repo.update_all(query, set: [read: true])
+  end
+
+  def get_unread(user_id) do
     Notification
-    |> Repo.update_all(set: [read: true])
+    |> where(user_id: ^user_id)
+    |> where(read: false)
+    |> Repo.exists?
   end
 
   def set_preload(notification, :post_like) do
