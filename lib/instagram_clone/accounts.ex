@@ -399,6 +399,12 @@ defmodule InstagramClone.Accounts do
     |> Repo.transaction()
     |> case do
       {:ok,   %{update_followers: update_followers}} ->
+        InstagramCloneWeb.Endpoint.broadcast_from(
+          self(),
+          UserAuth.pubsub_topic(),
+          "notify_user",
+          %{}
+        )
         {1, user} = update_followers
         hd(user)
     end
@@ -428,6 +434,12 @@ defmodule InstagramClone.Accounts do
     |> Repo.transaction()
     |> case do
       {:ok,   %{update_followers: update_followers}} ->
+        InstagramCloneWeb.Endpoint.broadcast_from(
+          self(),
+          UserAuth.pubsub_topic(),
+          "unnotify_user",
+          %{}
+        )
         {1, user} = update_followers
         hd(user)
     end

@@ -22,6 +22,28 @@ defmodule InstagramCloneWeb.LiveHelpers do
       end
 
       @impl true
+      def handle_info(%{event: "notify_user", payload: %{}}, socket) do
+        send_update(InstagramCloneWeb.HeaderNavComponent,
+          id: 1,
+          current_user: socket.assigns.current_user,
+          unread_notifications?: true
+        )
+
+        {:noreply, socket}
+      end
+
+      @impl true
+      def handle_info(%{event: "unnotify_user", payload: %{}}, socket) do
+        send_update(InstagramCloneWeb.HeaderNavComponent,
+          id: 1,
+          current_user: socket.assigns.current_user,
+          unread_notifications?: false
+        )
+
+        {:noreply, socket}
+      end
+
+      @impl true
       def handle_info({InstagramCloneWeb.HeaderNavComponent, :search_users_event, search}, socket) do
         case Accounts.search_users(search) do
           [] ->

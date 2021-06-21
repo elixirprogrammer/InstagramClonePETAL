@@ -34,6 +34,7 @@ defmodule InstagramClone.Notifications do
     Notification
     |> where(user_id: ^user_id)
     |> where([n], n.inserted_at >= datetime_add(^NaiveDateTime.utc_now(), -1, "week") )
+    |> order_by(desc: :id)
     |> preload(:actor)
     |> Repo.all
   end
@@ -74,7 +75,7 @@ defmodule InstagramClone.Notifications do
     notification
   end
 
-  def build_comment_notification(actor: actor, post: post, comment: comment) do
+  def create_comment_notification(actor: actor, post: post, comment: comment) do
     actor =
       Ecto.build_assoc(
         actor,

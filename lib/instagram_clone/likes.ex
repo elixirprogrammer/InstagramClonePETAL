@@ -3,6 +3,7 @@ defmodule InstagramClone.Likes do
   alias InstagramClone.Repo
   alias InstagramClone.Likes.Like
   alias InstagramClone.Notifications
+  alias InstagramCloneWeb.UserAuth
 
   def create_like(user, liked) do
     built_user = Ecto.build_assoc(user, :likes)
@@ -13,9 +14,15 @@ defmodule InstagramClone.Likes do
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert(:like, like)
-    |> Ecto.Multi.insert(:notification, notification)
     |> Ecto.Multi.update_all(:update_total_likes, update_total_likes, inc: [total_likes: 1])
     |> Repo.transaction()
+    |> case do
+      {:ok, %{like: _}} ->
+        if user.id !== liked.user_id do
+          Repo.insert(notification)
+          notify_user()
+        end
+    end
   end
 
   def unlike(user_id, liked) do
@@ -26,9 +33,15 @@ defmodule InstagramClone.Likes do
 
     Ecto.Multi.new()
     |> Ecto.Multi.delete(:like, like)
-    |> Ecto.Multi.delete(:notification, notification)
     |> Ecto.Multi.update_all(:update_total_likes, update_total_likes, inc: [total_likes: -1])
     |> Repo.transaction()
+    |> case do
+      {:ok, %{like: _}} ->
+        if user_id !== liked.user_id do
+          Repo.insert(notification)
+          unnotify_user()
+        end
+    end
   end
 
   # Returns nil if not found
@@ -58,7 +71,7 @@ defmodule InstagramClone.Likes do
   end
 
   defp get_notification(user_id, liked, :comment) do
-    Notifications.get_post_notification(
+    Notifications.get_comment_like_notification(
       actor_id: user_id,
       comment: liked
     )
@@ -71,5 +84,23 @@ defmodule InstagramClone.Likes do
     |> List.last
     |> String.downcase
     |> String.to_atom
+  end
+
+  defp notify_user do
+    InstagramCloneWeb.Endpoint.broadcast_from(
+      self(),
+      UserAuth.pubsub_topic(),
+      "notify_user",
+      %{}
+    )
+  end
+
+  defp unnotify_user do
+    InstagramCloneWeb.Endpoint.broadcast_from(
+      self(),
+      UserAuth.pubsub_topic(),
+      "unnotify_user",
+      %{}
+    )
   end
 end

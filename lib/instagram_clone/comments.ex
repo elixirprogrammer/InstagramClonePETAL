@@ -9,6 +9,7 @@ defmodule InstagramClone.Comments do
   alias InstagramClone.Likes.Like
   alias InstagramClone.Comments.Comment
   alias InstagramClone.Notifications
+  alias InstagramCloneWeb.UserAuth
 
   @doc """
   Returns the list of comments.
@@ -94,11 +95,19 @@ defmodule InstagramClone.Comments do
     |> Repo.transaction()
     |> case do
       {:ok, %{comment: comment}} ->
-        Notifications.build_comment_notification(
-          actor: user,
-          post: post,
-          comment: comment
-        )
+        if user.id !== post.user_id do
+          Notifications.create_comment_notification(
+            actor: user,
+            post: post,
+            comment: comment
+          )
+          InstagramCloneWeb.Endpoint.broadcast_from(
+            self(),
+            UserAuth.pubsub_topic(),
+            "notify_user",
+            %{}
+          )
+        end
         likes_query = Like |> select([l], l.user_id)
         comment |> Repo.preload(likes: likes_query)
     end
