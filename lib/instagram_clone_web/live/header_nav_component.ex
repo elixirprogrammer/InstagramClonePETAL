@@ -18,13 +18,18 @@ defmodule InstagramCloneWeb.HeaderNavComponent do
 
   @impl true
   def update(assigns, socket) do
-    current_user_id = assigns.current_user.id
-    unread_notification? = Notifications.get_unread(current_user_id)
-
     {:ok,
       socket
       |> assign(assigns)
-      |> assign(unread_notifications?: unread_notification?)}
+      |> assign(unread_notifications?: unread_notification?(assigns))}
+  end
+
+  defp unread_notification?(assigns) do
+    if assigns.current_user do
+      Notifications.get_unread(assigns.current_user.id)
+    else
+      false
+    end
   end
 
   @impl true
