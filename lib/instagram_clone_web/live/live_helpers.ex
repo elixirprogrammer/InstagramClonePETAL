@@ -49,6 +49,7 @@ defmodule InstagramCloneWeb.LiveHelpers do
           [] ->
             send_update(InstagramCloneWeb.HeaderNavComponent,
               id: 1,
+              current_user: socket.assigns.current_user,
               searched_users: [],
               users_not_found?: true,
               while_searching_users?: false
@@ -59,6 +60,7 @@ defmodule InstagramCloneWeb.LiveHelpers do
           users ->
             send_update(InstagramCloneWeb.HeaderNavComponent,
               id: 1,
+              current_user: socket.assigns.current_user,
               searched_users: users,
               users_not_found?: false,
               while_searching_users?: false,
