@@ -29,7 +29,6 @@ defmodule InstagramClone.Likes do
     like = liked?(user_id, liked.id)
     update_total_likes = liked.__struct__ |> where(id: ^liked.id)
     liked_name_atom = get_struct_name_to_atom(liked)
-    notification = get_notification(user_id, liked, liked_name_atom)
 
     Ecto.Multi.new()
     |> Ecto.Multi.delete(:like, like)
@@ -38,7 +37,8 @@ defmodule InstagramClone.Likes do
     |> case do
       {:ok, %{like: _}} ->
         if user_id !== liked.user_id do
-          Repo.insert(notification)
+          notification = get_notification(user_id, liked, liked_name_atom)
+          Repo.delete(notification)
           unnotify_user()
         end
     end
