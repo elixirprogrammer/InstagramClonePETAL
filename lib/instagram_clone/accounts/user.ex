@@ -66,10 +66,14 @@ defmodule InstagramClone.Accounts.User do
   defp validate_website_authority(changeset) do
     validate_change(changeset, :website, fn :website, website ->
       authority = URI.parse(website).authority
-      if String.match?(authority, ~r/^[a-zA-Z0-9.-]*$/) do
-        []
+      if authority do
+        if String.match?(authority, ~r/^[a-zA-Z0-9.-]*$/) do
+          []
+        else
+          [website: "Enter a valid website"]
+        end
       else
-        [website: "Enter a valid website"]
+        []
       end
     end)
   end
