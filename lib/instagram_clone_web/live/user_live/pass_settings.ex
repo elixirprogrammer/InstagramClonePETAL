@@ -2,7 +2,6 @@ defmodule InstagramCloneWeb.UserLive.PassSettings do
   use InstagramCloneWeb, :live_view
 
   alias InstagramClone.Accounts
-  alias InstagramClone.Accounts.User
   alias InstagramClone.Uploaders.Avatar
 
   @impl true

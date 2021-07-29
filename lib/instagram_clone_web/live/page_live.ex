@@ -3,7 +3,6 @@ defmodule InstagramCloneWeb.PageLive do
 
   alias InstagramClone.Uploaders.Avatar
   alias InstagramClone.Accounts
-  alias InstagramCloneWeb.UserLive.FollowComponent
   alias InstagramClone.Posts
   alias InstagramClone.Posts.Post
   alias InstagramCloneWeb.Live.LikeComponent
@@ -48,11 +47,6 @@ defmodule InstagramCloneWeb.PageLive do
       |> update(:page, &(&1 + 1))
       |> assign_user_feed()
     end
-  end
-
-  @impl true
-  def handle_info({FollowComponent, :update_totals, _}, socket) do
-    {:noreply, socket}
   end
 
   @impl true

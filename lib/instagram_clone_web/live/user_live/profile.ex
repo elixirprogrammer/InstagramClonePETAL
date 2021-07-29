@@ -2,7 +2,6 @@ defmodule InstagramCloneWeb.UserLive.Profile do
   use InstagramCloneWeb, :live_view
 
   alias InstagramClone.Accounts
-  alias InstagramCloneWeb.UserLive.FollowComponent
   alias InstagramClone.Posts
 
   @impl true
@@ -79,19 +78,6 @@ defmodule InstagramCloneWeb.UserLive.Profile do
   @impl true
   def handle_params(_params, _uri, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action)}
-  end
-
-  @impl true
-  def handle_info({FollowComponent, :update_totals, updated_user}, socket) do
-    {:noreply, apply_msg_action(socket, socket.assigns.live_action, updated_user)}
-  end
-
-  defp apply_msg_action(socket, :follow_component, updated_user) do
-    socket |> assign(user: updated_user)
-  end
-
-  defp apply_msg_action(socket, _, _updated_user) do
-    socket
   end
 
   defp apply_action(socket, :index) do

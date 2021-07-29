@@ -4,10 +4,24 @@ defmodule InstagramCloneWeb.LiveHelpers do
   alias InstagramClone.Accounts.User
   alias InstagramCloneWeb.UserAuth
   alias InstagramClone.Notifications
+  alias InstagramCloneWeb.UserLive.FollowComponent
 
   defmacro __using__(_opts) do
     quote do
       import InstagramCloneWeb.LiveHelpers
+
+      @impl true
+      def handle_info({FollowComponent, :update_totals, updated_user}, socket) do
+        {:noreply, apply_msg_action(socket, socket.assigns.live_action, updated_user)}
+      end
+
+      defp apply_msg_action(socket, :follow_component, updated_user) do
+        socket |> assign(user: updated_user)
+      end
+
+      defp apply_msg_action(socket, _live_action, _updated_user) do
+        socket
+      end
 
       @impl true
       def handle_info(%{event: "logout_user", payload: %{user: %User{id: id}}}, socket) do
