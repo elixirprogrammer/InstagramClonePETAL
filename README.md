@@ -2,7 +2,7 @@
 
 [Instagram Clone](https://petal-instagram-clone.herokuapp.com/ "Hosted Live Version") made with with the PETAL(Phoenix, Elixir, TailwindCSS, AlpineJS, LiveView) stack.
 
-![Instagram Clone Homepage](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/hqchl3mvl9soy1n03r83.jpg "Lancer Homepage")
+[![Instagram Clone Demo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0q3fxv1thiquwnrjx9yq.png "Instagram Clone Demo")](https://youtu.be/tQ-XbyGDE2Y)
 
 ### [See Hosted Live Version Here](https://petal-instagram-clone.herokuapp.com/ "Hosted Live Version")
 
