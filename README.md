@@ -17,7 +17,7 @@ You are encouraged to create an account, but if you want to get a feel of Lancer
 - faker39@fake.com
 - faker40@fake.com
 
-### CHECKOUT THE [BLOG POST SERIES](https://dev.to/elixirprogrammer/let-s-build-an-instagram-clone-with-the-petal-phoenix-elixir-tailwindcss-alpinejs-liveview-stack-263n "Blog Post Series")
+### CHECKOUT THE [BLOG POST SERIES](https://elixirprogrammer.com/series/instagram-clone "Blog Post Series")
 
 &nbsp;
 
